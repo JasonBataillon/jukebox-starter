@@ -23,18 +23,17 @@ model User {
 // A playlist model with a 1-to-n relationship with user and n-to-n with track
 // Serves to create an explicit n-to-n relationship between user and track
 model Playlist {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   name        String
   description String
-  owner       User   @relation(fields: [ownerId], references: [id])
   ownerId     Int
-  track       Track  @relation(fields: [trackId], references: [id])
-  trackId     Int
+  owner       User    @relation(fields: [ownerId], references: [id])
+  tracks      Track[] @relation("PlaylistTracks")
 }
 
 // A track model with a n-to-n relationship with playlist
 model Track {
   id        Int        @id @default(autoincrement())
   name      String
-  playlists Playlist[]
+  playlists Playlist[] @relation("PlaylistTracks")
 }
