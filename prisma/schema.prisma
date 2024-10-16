@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A user model linked to many playlists and many tracks per playlist
+model User {
+  id        Int        @id @default(autoincrement())
+  username  String
+  playlists Playlist[]
+}
+
+// A playlist model with a 1-to-n relationship with user and n-to-n with track
+// Serves to create an explicit n-to-n relationship between user and track
+model Playlist {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  owner       User    @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  tracks      Track[]
+}
+
+// A track model with a n-to-n relationship with playlist
+model Track {
+  id        Int        @id @default(autoincrement())
+  name      String
+  playlists Playlist[]
+}
