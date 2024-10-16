@@ -8,8 +8,8 @@ app.use('/tracks', require('./api/tracks'));
 
 router.get('/', async (req, res, next) => {
   try {
-    const users = await prisma.playlist.findMany();
-    res.json(users);
+    const playlists = await prisma.playlist.findMany();
+    res.json(playlists);
   } catch (e) {
     next(e);
   }
@@ -18,12 +18,12 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await prisma.playlist.findUnique({
+    const playlist = await prisma.playlist.findUnique({
       where: { id: +id },
       include: { tracks: true },
     });
-    if (user) {
-      res.json(user);
+    if (playlist) {
+      res.json(playlist);
     } else {
       next({ status: 404, message: `${id} playlist doesn't exist.` });
     }
@@ -34,7 +34,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, trackIds, ownerId } = req.body;
 
   if (!name || !description) {
     return next({
@@ -44,12 +44,18 @@ router.post('/', async (req, res, next) => {
   }
 
   try {
+    const track = trackIds.map((id) => ({ id: +id }));
     const playlist = await prisma.playlist.create({
       data: {
         name,
         description,
-        ownerId: +id,
-        trackId: +id,
+        ownerId: +ownerId,
+        trackId: +trackIds,
+        track: { connect: track },
+      },
+      include: {
+        owner: true,
+        track: true,
       },
     });
     res.status(201).json(playlist);

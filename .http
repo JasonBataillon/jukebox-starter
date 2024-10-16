@@ -1,0 +1,70 @@
+@host = http://localhost:3000
+
+### Get all users
+GET {{host}}/users
+
+### Gets all playlists
+GET {{host}}/playlists
+
+### Gets all tracks
+GET{{host}}/tracks
+
+### Get single user with playlists included
+GET {{host}}/users/2
+
+### Get single playlist with tracks included
+GET {{host}}/playlists/2
+
+### Get single track
+GET {{host}}/tracks/2
+
+### Get all users with a request location error : error 404
+GET {{host}}/user
+
+### Get single user with playlists included with a request location error : error 404
+GET {{host}}/user/2
+
+### Get single playlist with tracks included with a request location error : error 404
+GET {{host}}/playlist/2
+
+### Get single track with a request location error : error 404
+GET {{host}}/track/2
+
+### Get single user with playlists included that doesn't exist : error 404
+GET {{host}}/users/107
+
+### Get single playlist with tracks included that doesn't exist : error 404
+GET {{host}}/playlists/107
+
+### Get single track that doesn't exist : error 404
+GET {{host}}/tracks/107
+
+
+### Make new playlist for the user
+POST {{host}}/playlists/11
+Content-Type: application/json
+
+{
+"name": "Hungry Hungry Henry",
+"description": "Here's a great description."
+}
+
+
+### Make new playlist for the user with a request location error : error 404
+POST {{host}}/playlist/11
+Content-Type: application/json
+
+{
+"name": "Hungry Hungry Henry",
+"description": "Here's a great description."
+}
+
+
+### Make new playlist for the user using incorrect keys: error 400
+POST {{host}}/playlists/11
+Content-Type: application/json
+
+{
+"nae": "Hungry Hungry Henry",
+"desription": "Here's a great description."
+}
